@@ -1,0 +1,779 @@
+<![CDATA[<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - ToolMaster | Интернет-магазин инструментов</title>
+    <meta name="description" content="Каталог инструментов ToolMaster. Электроинструменты, сварочное оборудование, садовая техника и многое другое.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        /* Catalog Specific Styles */
+        .catalog-hero {
+            padding: 150px 0 80px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            text-align: center;
+            color: white;
+        }
+        
+        .catalog-hero h1 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .catalog-hero p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+        
+        .catalog-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            padding: 60px 0;
+        }
+        
+        /* Sidebar */
+        .catalog-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .filter-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .filter-list {
+            list-style: none;
+        }
+        
+        .filter-list li {
+            margin-bottom: 12px;
+        }
+        
+        .filter-list label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #636e72;
+            transition: all 0.3s;
+        }
+        
+        .filter-list label:hover {
+            color: #ff6b35;
+        }
+        
+        .filter-list input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff6b35;
+        }
+        
+        .price-range {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .price-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        
+        .price-input:focus {
+            border-color: #ff6b35;
+        }
+        
+        .apply-filter-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .apply-filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        /* Catalog Content */
+        .catalog-content {
+            min-height: 100vh;
+        }
+        
+        .catalog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .results-count {
+            font-size: 1rem;
+            color: #636e72;
+        }
+        
+        .results-count strong {
+            color: #2d3436;
+        }
+        
+        .catalog-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .sort-select {
+            padding: 12px 20px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: white;
+            min-width: 200px;
+        }
+        
+        .view-btns {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .view-btn {
+            width: 45px;
+            height: 45px;
+            border: 2px solid #f0f0f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .view-btn.active, .view-btn:hover {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: white;
+        }
+        
+        .catalog-products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .catalog-products.list-view {
+            grid-template-columns: 1fr;
+        }
+        
+        .catalog-products.list-view .product-card {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+        }
+        
+        .catalog-products.list-view .product-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+        
+        .page-btn {
+            width: 45px;
+            height: 45px;
+            border: 2px solid #f0f0f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-btn.active, .page-btn:hover {
+            background: #ff6b35;
+            border-color: #ff6b35;
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .catalog-products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .catalog-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .catalog-sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .catalog-products {
+                grid-template-columns: 1fr;
+            }
+            
+            .catalog-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header-container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="logo-text">Tool<span>Master</span></div>
+            </a>
+            
+            <nav class="nav">
+                <a href="../index.html" class="nav-link">Главная</a>
+                <a href="catalog.html" class="nav-link">Каталог</a>
+                <a href="../index.html#about" class="nav-link">О нас</a>
+                <a href="../index.html#team" class="nav-link">Команда</a>
+                <a href="contacts.html" class="nav-link">Контакты</a>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="tel:+996700964866" class="header-phone">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>+996 700 964 866</span>
+                </a>
+                <button class="cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Catalog Hero -->
+    <section class="catalog-hero">
+        <div class="container">
+            <h1>Каталог товаров</h1>
+            <p>Более 5000 наименований качественных инструментов и оборудования</p>
+        </div>
+    </section>
+
+    <!-- Catalog -->
+    <section class="products">
+        <div class="container">
+            <div class="catalog-container">
+                <!-- Sidebar -->
+                <aside class="catalog-sidebar">
+                    <!-- Categories -->
+                    <div class="filter-section">
+                        <h3 class="filter-title"><i class="fas fa-list"></i> Категории</h3>
+                        <ul class="filter-list">
+                            <li>
+                                <label>
+                                    <input type="checkbox" checked> Электроинструменты
+                                    <span style="margin-left: auto; color: #b2bec3;">350</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Строительное оборудование
+                                    <span style="margin-left: auto; color: #b2bec3;">180</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Сварочное оборудование
+                                    <span style="margin-left: auto; color: #b2bec3;">95</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Садовая техника
+                                    <span style="margin-left: auto; color: #b2bec3;">120</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Компрессоры
+                                    <span style="margin-left: auto; color: #b2bec3;">45</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Насосы
+                                    <span style="margin-left: auto; color: #b2bec3;">65</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="checkbox"> Измерительные инструменты
+                                    <span style="margin-left: auto; color: #b2bec3;">200</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Brands -->
+                    <div class="filter-section">
+                        <h3 class="filter-title"><i class="fas fa-tags"></i> Бренды</h3>
+                        <ul class="filter-list">
+                            <li><label><input type="checkbox"> Bosch</label></li>
+                            <li><label><input type="checkbox"> Makita</label></li>
+                            <li><label><input type="checkbox"> DeWalt</label></li>
+                            <li><label><input type="checkbox"> Metabo</label></li>
+                            <li><label><input type="checkbox"> Fubag</label></li>
+                            <li><label><input type="checkbox"> Hikoki</label></li>
+                            <li><label><input type="checkbox"> Crown</label></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div class="filter-section">
+                        <h3 class="filter-title"><i class="fas fa-dollar-sign"></i> Цена</h3>
+                        <div class="price-range">
+                            <input type="number" class="price-input" placeholder="От" value="0">
+                            <span>-</span>
+                            <input type="number" class="price-input" placeholder="До" value="100000">
+                        </div>
+                        <button class="apply-filter-btn">Применить фильтры</button>
+                    </div>
+                    
+                    <!-- Availability -->
+                    <div class="filter-section">
+                        <h3 class="filter-title"><i class="fas fa-check-circle"></i> Наличие</h3>
+                        <ul class="filter-list">
+                            <li><label><input type="checkbox" checked> В наличии</label></li>
+                            <li><label><input type="checkbox"> Под заказ</label></li>
+                            <li><label><input type="checkbox"> Акционные товары</label></li>
+                        </ul>
+                    </div>
+                </aside>
+                
+                <!-- Products -->
+                <div class="catalog-content">
+                    <div class="catalog-header">
+                        <p class="results-count">Найдено <strong>248</strong> товаров</p>
+                        <div class="catalog-controls">
+                            <select class="sort-select">
+                                <option>По популярности</option>
+                                <option>По цене (сначала дешевые)</option>
+                                <option>По цене (сначала дорогие)</option>
+                                <option>По названию А-Я</option>
+                                <option>По названию Я-А</option>
+                                <option>Новинки</option>
+                            </select>
+                            <div class="view-btns">
+                                <button class="view-btn active" id="gridView"><i class="fas fa-th-large"></i></button>
+                                <button class="view-btn" id="listView"><i class="fas fa-list"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="catalog-products" id="catalogProducts">
+                        <!-- Product 1 -->
+                        <div class="product-card fade-in">
+                            <div class="product-badge">-25%</div>
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=300&h=200&fit=crop" alt="Перфоратор Bosch">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Перфораторы</p>
+                                <h4 class="product-title"><a href="#">Перфоратор Bosch GBH 2-26 DFR</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>(47)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">12 500 сом</span>
+                                        <span class="price-old">16 700 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="1"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 2 -->
+                        <div class="product-card fade-in">
+                            <div class="product-badge new">Новинка</div>
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=300&h=200&fit=crop" alt="Шуруповерт">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Шуруповерты</p>
+                                <h4 class="product-title"><a href="#">Аккумуляторный шуруповерт Makita DDF485Z</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span>(89)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">8 900 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="2"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 3 -->
+                        <div class="product-card fade-in">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1580402427914-a068b8cfc495?w=300&h=200&fit=crop" alt="Болгарка">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Шлифовальные машины</p>
+                                <h4 class="product-title"><a href="#">Углошлифовальная машина DeWalt DWE4257</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span>(32)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">6 750 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="3"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 4 -->
+                        <div class="product-card fade-in">
+                            <div class="product-badge">-15%</div>
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=300&h=200&fit=crop" alt="Сварка">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Сварочное оборудование</p>
+                                <h4 class="product-title"><a href="#">Сварочный инвертор Fubag IR 200 MAX</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>(56)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">14 200 сом</span>
+                                        <span class="price-old">16 700 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="4"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 5 -->
+                        <div class="product-card fade-in">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=200&fit=crop" alt="Дрель">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Дрели</p>
+                                <h4 class="product-title"><a href="#">Дрель ударная Metabo SB 18 LTX BL I</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span>(41)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">11 300 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="5"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 6 -->
+                        <div class="product-card fade-in">
+                            <div class="product-badge new">Новинка</div>
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=300&h=200&fit=crop" alt="Пила">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Пилы</p>
+                                <h4 class="product-title"><a href="#">Циркулярная пила Makita 5008MG</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span>(28)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">9 800 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="6"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 7 -->
+                        <div class="product-card fade-in">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300&h=200&fit=crop" alt="Компрессор">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Компрессоры</p>
+                                <h4 class="product-title"><a href="#">Компрессор Fubag Air Master Kit 50</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <span>(34)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">22 500 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="7"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 8 -->
+                        <div class="product-card fade-in">
+                            <div class="product-badge">-20%</div>
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop" alt="Набор">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Наборы инструментов</p>
+                                <h4 class="product-title"><a href="#">Набор инструментов Ombra 215 предм.</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span>(72)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">7 600 сом</span>
+                                        <span class="price-old">9 500 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="8"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 9 -->
+                        <div class="product-card fade-in">
+                            <div class="product-image">
+                                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=300&h=200&fit=crop" alt="Лобзик">
+                                <div class="product-actions">
+                                    <button class="product-action-btn"><i class="far fa-heart"></i></button>
+                                    <button class="product-action-btn"><i class="far fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-category">Лобзики</p>
+                                <h4 class="product-title"><a href="#">Электролобзик Bosch GST 150 BCE</a></h4>
+                                <div class="product-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <span>(23)</span>
+                                </div>
+                                <div class="product-price">
+                                    <div>
+                                        <span class="price-current">8 450 сом</span>
+                                    </div>
+                                    <button class="add-to-cart" data-id="9"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <div class="logo-icon"><i class="fas fa-tools"></i></div>
+                        <div class="logo-text">Tool<span>Master</span></div>
+                    </div>
+                    <p class="footer-about">ToolMaster — современный интернет-магазин инструментов в Кыргызстане.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Каталог</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Электроинструменты</a></li>
+                        <li><a href="#">Сварочное оборудование</a></li>
+                        <li><a href="#">Садовая техника</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Информация</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Доставка</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Контакты</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-phone-alt"></i><span>+996 700 964 866</span></li>
+                        <li><i class="fas fa-envelope"></i><span>info@toolmaster.kg</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ToolMaster. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // View toggle
+        const gridViewBtn = document.getElementById('gridView');
+        const listViewBtn = document.getElementById('listView');
+        const catalogProducts = document.getElementById('catalogProducts');
+        
+        gridViewBtn.addEventListener('click', () => {
+            catalogProducts.classList.remove('list-view');
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+        });
+        
+        listViewBtn.addEventListener('click', () => {
+            catalogProducts.classList.add('list-view');
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
+]]>
